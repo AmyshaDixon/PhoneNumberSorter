@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -99,22 +100,37 @@ namespace PhoneNumberSorter
             // Store line data (numbers) into arrays
             for (int i = 0; i < deletableLines.Length; i++)
             {
-                deletableList.Add(deletableLines[i].Trim());
+                string simplifyLine = Regex.Replace(deletableLines[i], @"\t|\n|\r", "");
+
+                deletableList.Add(simplifyLine.Trim());
             }
 
             for (int i = 0; i < comparableLines.Length; i++)
             {
-                comparableList.Add(deletableLines[i].Trim());
+                string simplifyLine2 = Regex.Replace(deletableLines[i], @"\t|\n|\r", "");
+
+                comparableList.Add(simplifyLine2.Trim());
             }
 
             // Compare lists and delete differing numbers from first list
-            for(int i = 0; i < deletableList.Count; i++)
+            for (int i = deletableList.Count - 1; i >= 0; i--)
             {
-                if(!comparableList.Contains(deletableList[i]))
+                foreach (string number in comparableList)
+                {
+                    if (!(number.Contains(Convert.ToString(deletableList[i]))))
+                    {
+                        deletableList.Remove(deletableList[i]);
+                    }
+                }
+            }
+
+            /*for(int i = deletableList.Count - 1; i >= 0; i--)
+            {
+                if(!(comparableList.Contains(deletableList[i])))
                 {
                     deletableList.Remove(deletableList[i]);
                 }
-            }
+            }*/
 
             // Provide user with a file to save
             SaveFileDialog saveFile = new SaveFileDialog();
