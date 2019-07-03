@@ -116,7 +116,7 @@ namespace PhoneNumberSorter
             for(int i = deletableList.Count - 1; i >= 0; i--)
             {
                 //If deletable list has a number different than comparable                
-                if (!(comparableList.Contains(Convert.ToInt64(deletableList[i]))))
+                if (!(comparableList.Contains(deletableList[i])))
                 {
                     // and DOES NOT start with 619, delete it
                     if (Convert.ToInt64(deletableList[i]) / 10000000 != 619)
