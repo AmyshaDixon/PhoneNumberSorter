@@ -109,23 +109,36 @@ namespace PhoneNumberSorter
         /// <param name="e"></param>
         private void BtnParse_Click(object sender, EventArgs e)
         {
-            // Create lists
-            List<long> deletableList = new List<long>();
-            List<long> comparableList = new List<long>();
+            //Make sure there are files selected
+            if (!String.IsNullOrEmpty(tbDelete.Text) && !String.IsNullOrEmpty(tbCompare.Text))
+            {
+                // Create lists
+                List<long> deletableList = new List<long>();
+                List<long> comparableList = new List<long>();
 
-            // Separate list data
-            string[] deletableLines = FILE_CONTENTS_DELETE.Split('\n');
-            string[] comparableLines = FILE_CONTENTS_COMPARE.Split('\n');
+                //Separate list data
+                string[] deletableLines = FILE_CONTENTS_DELETE.Split('\n');
+                string[] comparableLines = FILE_CONTENTS_COMPARE.Split('\n');
 
-            // Store line data (numbers) into arrays
-            LineDataToArray(deletableList, deletableLines);
-            LineDataToArray(comparableList, comparableLines);
+                // Store line data (numbers) into arrays
+                LineDataToArray(deletableList, deletableLines);
+                LineDataToArray(comparableList, comparableLines);
 
-            // Compare lists and delete differing numbers from first list
-            CompareLists(deletableList, comparableList);
+                //Compare lists and delete differing numbers from first list
+                CompareLists(deletableList, comparableList);
 
-            // Provide user with a file to save
-            SaveNewFile(deletableList);
+                //Provide user with a file to save
+                SaveNewFile(deletableList);
+
+                //Clear textboxes
+                tbDelete.Clear();
+                tbCompare.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Please make sure two files are selected",
+                    "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         /// <summary>
