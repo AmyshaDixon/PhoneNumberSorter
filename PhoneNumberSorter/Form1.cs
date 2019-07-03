@@ -90,8 +90,8 @@ namespace PhoneNumberSorter
         private void BtnParse_Click(object sender, EventArgs e)
         {
             // Create array lists
-            ArrayList deletableList = new ArrayList();
-            ArrayList comparableList = new ArrayList();
+            List<Int64> deletableList = new List<Int64>();
+            List<Int64> comparableList = new List<Int64>();
 
             // Separate list data
             string[] deletableLines = FILE_CONTENTS_DELETE.Split('\n');
@@ -100,37 +100,31 @@ namespace PhoneNumberSorter
             // Store line data (numbers) into arrays
             for (int i = 0; i < deletableLines.Length; i++)
             {
-                string simplifyLine = Regex.Replace(deletableLines[i], @"\t|\n|\r", "");
+                string simplifyLine = Regex.Replace(deletableLines[i], @"\t|\n|\r", "").Trim();
 
-                deletableList.Add(simplifyLine.Trim());
+                deletableList.Add(Convert.ToInt64(simplifyLine));
             }
 
             for (int i = 0; i < comparableLines.Length; i++)
             {
-                string simplifyLine2 = Regex.Replace(deletableLines[i], @"\t|\n|\r", "");
+                string simplifyLine = Regex.Replace(comparableLines[i], @"\t|\n|\r", "").Trim();
 
-                comparableList.Add(simplifyLine2.Trim());
+                comparableList.Add(Convert.ToInt64(simplifyLine));
             }
 
             // Compare lists and delete differing numbers from first list
-            for (int i = deletableList.Count - 1; i >= 0; i--)
+            for(int i = deletableList.Count - 1; i >= 0; i--)
             {
-                foreach (string number in comparableList)
+                //If deletable list has a number different than comparable                
+                if (!(comparableList.Contains(Convert.ToInt64(deletableList[i]))))
                 {
-                    if (!(number.Contains(Convert.ToString(deletableList[i]))))
+                    // and DOES NOT start with 619, delete it
+                    if (Convert.ToInt64(deletableList[i]) / 10000000 != 619)
                     {
                         deletableList.Remove(deletableList[i]);
                     }
                 }
             }
-
-            /*for(int i = deletableList.Count - 1; i >= 0; i--)
-            {
-                if(!(comparableList.Contains(deletableList[i])))
-                {
-                    deletableList.Remove(deletableList[i]);
-                }
-            }*/
 
             // Provide user with a file to save
             SaveFileDialog saveFile = new SaveFileDialog();
