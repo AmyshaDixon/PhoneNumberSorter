@@ -22,6 +22,17 @@ namespace PhoneNumberSorter
         public Form1()
         {
             InitializeComponent();
+
+            //Adds directions to lblDirections at the top of the app when app opens
+            lblDirections.Text = "This is a program that sorts through and compares two given .txt " +
+                "files that each contain a list of phone numbers; the .txt file must use a one-phone-number-per-line " +
+                "format. Below, click each 'Browse' button to upload a file to the corresponding box." +
+                "The first box being the file that you want to delete from, and the second file being " +
+                "for comparison purposes only. \n \nWhen 'Parse' is clicked, the program will search for " +
+                "differences between the two given .txt files and delete those numbers from the first " +
+                "given list as long as it does not begin with the 619 area code. This new list will then " +
+                "be stored in a .txt file, which you will be asked to save on your desktop with a popup. " +
+                "\n \nTo exit, either click the 'x' in the upper right corner or click on 'exit'.";
         }
 
         /// <summary>
@@ -179,6 +190,16 @@ namespace PhoneNumberSorter
                 streamWriter.Dispose();
                 streamWriter.Close();
             }
-        }        
+        }
+
+        /// <summary>
+        /// Allows user to exit the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }
