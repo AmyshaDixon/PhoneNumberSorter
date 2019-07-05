@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.lblDelete = new System.Windows.Forms.Label();
             this.lblCompare = new System.Windows.Forms.Label();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -182,6 +183,7 @@
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.lblCompare);
             this.Controls.Add(this.lblDelete);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "Form1";
             this.Text = "Phone Number Sorter";

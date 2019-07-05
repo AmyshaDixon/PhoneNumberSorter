@@ -28,8 +28,8 @@ namespace PhoneNumberSorter
                 "files that each contain a list of phone numbers; text files must use a one-phone-number-per-line " +
                 "format. Below, click each 'Browse' button to upload a file to the corresponding box." +
                 "The first box being the file that you want to delete from, and the second file being " +
-                "for comparison purposes only. \n \nAfter your files are selected, then input an area code " +
-                "for any numbers you would like to keep; these will not be deleted from the first list. " +
+                "for comparison purposes only. \n \nAfter your files are selected, you can input an area code " +
+                "for any phone numbers you would like to keep; these will not be deleted from the first list. " +
                 "You may also leave the text box empty if this option is not needed. Keep in mind that any " +
                 "area code entered must be three digits long. Letters and two-digit numbers will not be accepted. " +
                 "\n \nWhen 'Parse' is clicked, the program will search for differences between the two given .txt " +
