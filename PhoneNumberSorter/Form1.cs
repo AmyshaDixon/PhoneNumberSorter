@@ -132,43 +132,31 @@ namespace PhoneNumberSorter
                 LineDataToArray(deletableList, deletableLines);
                 LineDataToArray(comparableList, comparableLines);
 
-                //Compare lists and delete differing numbers from first list, saving numbers
-                //with given area code
-                if (!String.IsNullOrWhiteSpace(areaCode) &&
-                    areaCode.Length == 3) // Making sure there is a 3-character area code to work with
+                // Make sure area code is either three digits or empty, returns true
+                //if area code is acceptable and false if not
+                if(CheckAreaCode(areaCode))
                 {
-                    try
-                    {
-                        CompareListsWithAreaCode(deletableList, comparableList, Convert.ToInt16(areaCode));
-                    }
-                    catch
-                    {
-                        MessageBox.Show("The area code must be digits only",
-                            "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
+                    CompareListsWithAreaCode(deletableList, comparableList, Convert.ToInt16(areaCode));
+
+                    //Provide user with a file to save
+                    SaveNewFile(deletableList);
+
+                    //Clear textboxes
+                    ClearTextBoxes();
                 }
                 else
                 {
-                    //If the code entered IS NOT 3 characters, give a warning
-                    if(areaCode.Length != 3)
-                    {
-                        MessageBox.Show("Any area code entered must be a total of three digits",
-                            "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
-                    else //And if it is empty, just continue
+                    if(String.IsNullOrWhiteSpace(areaCode))
                     {
                         CompareListsWithNoAreaCode(deletableList, comparableList);
+
+                        //Provide user with a file to save
+                        SaveNewFile(deletableList);
+
+                        //Clear textboxes
+                        ClearTextBoxes();
                     }
-                }
-
-                    
-
-                //Provide user with a file to save
-                SaveNewFile(deletableList);
-
-                //Clear textboxes
-                tbDelete.Clear();
-                tbCompare.Clear();
+                }                
             }
             else
             {
@@ -191,6 +179,80 @@ namespace PhoneNumberSorter
 
                 mainList.Add(Convert.ToInt64(simplifyLine));
             }
+        }
+
+        private static bool CheckAreaCode(string areaCode)
+        {
+            //Compare lists and delete differing numbers from first list, saving numbers
+            //with given area code
+            if (areaCode.Length == 3) // Making sure there is a 3-character numeric area code to work with
+            {
+                if (LookForNumbers(areaCode))
+                {
+                    return true;
+                }
+                else // If area code ISN'T all numbers, give a warning
+                {
+                    MessageBox.Show("Only numeric area codes are accepted",
+                                            "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+            else
+            {
+                //If the code entered IS NEITHER 3 characters nor 0, give a warning
+                if (areaCode.Length == 2 || areaCode.Length == 1)
+                {
+                    MessageBox.Show("Any area code entered must be a total of three digits",
+                        "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks a string of three characters to make sure they are all
+        /// numeric values
+        /// </summary>
+        /// <param name="areaCode"></param>
+        /// <returns>True if every character is a number</returns>
+        private static bool LookForNumbers(string areaCode)
+        {
+            //Variables
+            bool index0isNumber = false;
+            bool index1isNumber = false;
+            bool index2isNumber = false;
+
+            for(int i = 0; i < 3; i++)
+            {
+                if(areaCode[i] == '1' ||
+                    areaCode[i] == '2' ||
+                    areaCode[i] == '3' ||
+                    areaCode[i] == '4' ||
+                    areaCode[i] == '5' || 
+                    areaCode[i] == '6' ||
+                    areaCode[i] == '7' ||
+                    areaCode[i] == '8' ||
+                    areaCode[i] == '9' ||
+                    areaCode[i] == '0')
+                {
+                    if(i == 0)
+                    {
+                        index0isNumber = true;
+                    }
+                    else if(i == 1)
+                    {
+                        index1isNumber = true;
+                    }
+                    else
+                    {
+                        index2isNumber = true;
+                    }
+                }
+            }
+
+            return index0isNumber && index1isNumber && index2isNumber;
         }
 
         /// <summary>
@@ -267,6 +329,16 @@ namespace PhoneNumberSorter
         private void BtnExit_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <summary>
+        /// Removes all text from textboxes
+        /// </summary>
+        private void ClearTextBoxes()
+        {
+            tbDelete.Clear();
+            tbCompare.Clear();
+            tbAreaCode.Clear();
         }
     }
 }
