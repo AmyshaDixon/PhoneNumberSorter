@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PhoneNumberSorter
@@ -181,6 +174,12 @@ namespace PhoneNumberSorter
             }
         }
 
+        /// <summary>
+        /// Makes sure area code is only used when it is valid: three numeric characters
+        /// or nothing at all
+        /// </summary>
+        /// <param name="areaCode"></param>
+        /// <returns></returns>
         private static bool CheckAreaCode(string areaCode)
         {
             //Compare lists and delete differing numbers from first list, saving numbers
@@ -322,16 +321,6 @@ namespace PhoneNumberSorter
         }
 
         /// <summary>
-        /// Allows user to exit the application
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnExit_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        /// <summary>
         /// Removes all text from textboxes
         /// </summary>
         private void ClearTextBoxes()
@@ -340,5 +329,15 @@ namespace PhoneNumberSorter
             tbCompare.Clear();
             tbAreaCode.Clear();
         }
+        
+        /// <summary>
+        /// Allows user to exit the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }        
     }
 }
