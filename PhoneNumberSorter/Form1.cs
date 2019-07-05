@@ -25,14 +25,18 @@ namespace PhoneNumberSorter
 
             //Adds directions to lblDirections at the top of the app when app opens
             lblDirections.Text = "This is a program that sorts through and compares two given .txt " +
-                "files that each contain a list of phone numbers; the .txt file must use a one-phone-number-per-line " +
+                "files that each contain a list of phone numbers; text files must use a one-phone-number-per-line " +
                 "format. Below, click each 'Browse' button to upload a file to the corresponding box." +
                 "The first box being the file that you want to delete from, and the second file being " +
-                "for comparison purposes only. \n \nWhen 'Parse' is clicked, the program will search for " +
-                "differences between the two given .txt files and delete those numbers from the first " +
-                "given list as long as it does not begin with the 619 area code. This new list will then " +
-                "be stored in a .txt file, which you will be asked to save on your desktop with a popup. " +
-                "\n \nTo exit, either click the 'x' in the upper right corner or click on 'exit'.";
+                "for comparison purposes only. \n \nAfter your files are selected, then input an area code " +
+                "for any numbers you would like to keep; these will not be deleted from the first list. " +
+                "You may also leave the text box empty if this option is not needed. Keep in mind that any " +
+                "area code entered must be three digits long. Letters and two-digit numbers will not be accepted. " +
+                "\n \nWhen 'Parse' is clicked, the program will search for differences between the two given .txt " +
+                "files and delete those numbers from the first given list as long as it does not begin with the area " +
+                "code given. If an area code is not given, then all differening phone numbers will be removed from the " +
+                "first list. This new list will then be stored in a .txt file, which you will be asked to save to your " +
+                "desktop with a popup. \n \nTo exit, either click the 'x' in the upper right corner or click on 'exit'.";
         }
 
         /// <summary>
@@ -103,12 +107,16 @@ namespace PhoneNumberSorter
         
         /// <summary>
         /// Compares the first list to the second and deletes any differing numbers
-        /// from list 1. Produces a new list in a .txt file for the user to save
+        /// from list 1 while retaining any numbers beginning with the given area code. 
+        /// Produces a new list in a .txt file for the user to save
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnParse_Click(object sender, EventArgs e)
         {
+            // Save contents of tbAreaCode
+            string areaCode = tbAreaCode.Text;
+
             //Make sure there are files selected
             if (!String.IsNullOrEmpty(tbDelete.Text) && !String.IsNullOrEmpty(tbCompare.Text))
             {
@@ -124,8 +132,36 @@ namespace PhoneNumberSorter
                 LineDataToArray(deletableList, deletableLines);
                 LineDataToArray(comparableList, comparableLines);
 
-                //Compare lists and delete differing numbers from first list
-                CompareLists(deletableList, comparableList);
+                //Compare lists and delete differing numbers from first list, saving numbers
+                //with given area code
+                if (!String.IsNullOrWhiteSpace(areaCode) &&
+                    areaCode.Length == 3) // Making sure there is a 3-character area code to work with
+                {
+                    try
+                    {
+                        CompareListsWithAreaCode(deletableList, comparableList, Convert.ToInt16(areaCode));
+                    }
+                    catch
+                    {
+                        MessageBox.Show("The area code must be digits only",
+                            "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
+                else
+                {
+                    //If the code entered IS NOT 3 characters, give a warning
+                    if(areaCode.Length != 3)
+                    {
+                        MessageBox.Show("Any area code entered must be a total of three digits",
+                            "Oh, no!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    else //And if it is empty, just continue
+                    {
+                        CompareListsWithNoAreaCode(deletableList, comparableList);
+                    }
+                }
+
+                    
 
                 //Provide user with a file to save
                 SaveNewFile(deletableList);
@@ -158,23 +194,41 @@ namespace PhoneNumberSorter
         }
 
         /// <summary>
-        /// Compares the deletableList to the comparableList and removed
-        /// differing numbers that DO NOT beging with the area code 619
+        /// Compares the deletableList to the comparableList and removes
+        /// differing numbers that DO NOT beging with the given area code
         /// </summary>
         /// <param name="deletableList"></param>
         /// <param name="comparableList"></param>
-        private static void CompareLists(List<long> deletableList, List<long> comparableList)
+        /// <param name="areaCode"></param>
+        private static void CompareListsWithAreaCode(List<long> deletableList, List<long> comparableList, int areaCode)
         {
             for (int i = deletableList.Count - 1; i >= 0; i--)
             {
                 //If deletable list has a number different than comparable                
                 if (!(comparableList.Contains(deletableList[i])))
                 {
-                    // and DOES NOT start with 619, delete it
-                    if (deletableList[i] / 10000000 != 619)
+                    // and DOES NOT start with the area code, delete it
+                    if (deletableList[i] / 10000000 != Convert.ToInt16(areaCode))
                     {
                         deletableList.Remove(deletableList[i]);
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Compares the deletableList to the comparableList and removes
+        /// differing numbers (no area code involved)
+        /// </summary>
+        /// <param name="deletableList"></param>
+        /// <param name="comparableList"></param>
+        private static void CompareListsWithNoAreaCode(List<long> deletableList, List<long> comparableList)
+        {
+            for (int i = deletableList.Count - 1; i >= 0; i--)
+            {              
+                if (!(comparableList.Contains(deletableList[i])))
+                {
+                    deletableList.Remove(deletableList[i]);
                 }
             }
         }
